@@ -1,0 +1,31 @@
+{
+  "name": "video-js",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/composition-api": "^0.33.1",
+    "@videojs/http-streaming": "^3.15.0",
+    "core-js": "^3.25.3",
+    "jb-videojs-hls-quality-selector": "^2.0.2",
+    "nuxt": "^2.15.8",
+    "pug": "^3.0.2",
+    "pug-plain-loader": "^1.1.0",
+    "video.js": "^8.19.1",
+    "videojs-contrib-quality-levels": "^4.1.0",
+    "videojs-youtube": "^3.0.1",
+    "vue": "^2.7.10",
+    "vue-server-renderer": "^2.7.10",
+    "vue-template-compiler": "^2.7.10"
+  },
+  "devDependencies": {
+    "sass": "^1.80.6",
+    "sass-loader": "^8.0.2"
+  }
+}
