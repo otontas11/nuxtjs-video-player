@@ -1,5 +1,7 @@
 <template lang="pug">
 .video-player
+  .video__observer(v-observe-visibility="handleVisibilityChange")
+
   .video-player-skeleton(v-if="isVisibleSkeleton" :style="[aspectRatioStyle]")
     img.video-player-skeleton__image(:src="skeletonImage")
 
@@ -9,7 +11,7 @@
 </template>
 
 <script>
-import {defineComponent, ref, onMounted, reactive, computed} from '@nuxtjs/composition-api';
+import {defineComponent, ref, onMounted, reactive, computed, watch} from '@nuxtjs/composition-api';
 import videojs from 'video.js';
 import 'videojs-youtube';
 import 'video.js/dist/video-js.css'
@@ -40,7 +42,7 @@ export default defineComponent({
   setup(props, {emit}){
     // Video.js player instance and video element reference
     const videoPlayerRef = ref(null)
-     const player = ref(null);
+    const player = ref(null);
 
     const videoSrc = computed(()=> props.src );
     const videoType = computed(() => props.type );
@@ -50,6 +52,7 @@ export default defineComponent({
       isReadyVideoJsPlayer: false,
       src: videoSrc.value,
       type: videoType.value,
+      isPlaying: false,
       config:{
         withCredentials: true,
         aspectRatio:  props.videoJsConfig?.aspectRatio || '16:9',
@@ -96,6 +99,24 @@ export default defineComponent({
       initVideoJs()
     })
 
+    // When video.js player is ready
+    watch(
+        () => video.isReadyVideoJsPlayer,
+        value => {
+          if (value) {
+
+            player.value.on('playing', () => {
+              video.isPlaying = true;
+             });
+
+            player.value.on(['waiting', 'pause'], () => {
+              video.isPlaying = false;
+             });
+
+          }
+        },
+    );
+
     const setupVideoJsPlayer=()=>{
       initVideoJs();
 
@@ -134,7 +155,19 @@ export default defineComponent({
       }
     }
 
-    return {videoPlayerRef, video, isVisibleSkeleton, aspectRatioStyle, skeletonImage}
+    const handleVisibilityChange=(isVisible, entry) =>{
+      console.log("isVisible",isVisible)
+      console.log("entry",entry)
+
+      if (!isVisible) {
+        if (video.isPlaying) {
+          console.log("içeder")
+          player.value.pause();
+        }
+      }
+    }
+
+    return {videoPlayerRef, video, isVisibleSkeleton, aspectRatioStyle, skeletonImage, handleVisibilityChange}
 
   }
 })
